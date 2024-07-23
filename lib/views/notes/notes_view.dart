@@ -3,7 +3,6 @@ import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/enum/menu_action.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
-
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
 
@@ -19,12 +18,6 @@ class _NotesViewState extends State<NotesView> {
     _notesService=NotesService();
     super.initState();
 
-  }
-
-  @override 
-  void dispose(){
-    _notesService.close();
-    super.dispose();
   }
   String get userEmail => AuthService.firebase().currentUser!.email!;
   @override
@@ -70,15 +63,38 @@ class _NotesViewState extends State<NotesView> {
                 {
                   case ConnectionState.waiting:
                   case ConnectionState.active:
-                  return const Text('Welcome to notes');
+                  if(snapshot.hasData)
+                  {
+                    final allNotes=snapshot.data as List<DataBaseNote>;
+                    return ListView.builder(
+                    itemCount:allNotes.length,
+                    itemBuilder: (context,index)
+                    {
+                      final note=allNotes[index];
+                      return ListTile(
+                        title:Text(note.text,
+                        maxLines:1,
+                        softWrap:true,
+                        overflow:TextOverflow.ellipsis,
+                        ),
+                        
+                      );
+
+                    });
+                  }
+                  else 
+                  {
+                    return const CircularProgressIndicator();
+                  }
+                  
                   default:
-                  return CircularProgressIndicator();
-                }
+                  return const CircularProgressIndicator();
+              }
               }
             );
              
              default:
-             return CircularProgressIndicator();
+             return const CircularProgressIndicator();
 
           }
         }

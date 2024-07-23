@@ -6,15 +6,24 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
-
 class NotesService{
   Database? _db;
   List<DataBaseNote> _notes=[];
-  final _notesStreamController=StreamController<List<DataBaseNote>>.broadcast();
-  static final NotesService _shared=NotesService._sharedInstance();
-  NotesService._sharedInstance();
+  static final NotesService _shared = NotesService._sharedInstance();
+  NotesService._sharedInstance() {
+    _notesStreamController = StreamController<List<DataBaseNote>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      },
+    );
+  }
   factory NotesService() => _shared;
-  Stream<List<DataBaseNote>> get allNotes => _notesStreamController.stream;
+
+  late final StreamController<List<DataBaseNote>> _notesStreamController;
+  Stream<List<DataBaseNote>> get allNotes =>_notesStreamController.stream;
+       
+
+  
   Future<DataBaseUser> getOrCreateUser({required String email}) async{
     try 
     {
@@ -117,21 +126,21 @@ class NotesService{
   Future<DataBaseNote> createNote({required DataBaseUser owner}) async {
     await _ensureDbIsOpen();
     final db=_getDatabaseorthrow();
-    final dbUser=getUser(email: owner.email);
-    if(dbUser != owner)
+    final dbUser=await getUser(email: owner.email);
+    if(dbUser!=owner)
     {
       throw CouldNotFindUser();
     }
     final noteId=await db.insert(noteTable,{
       useridColumn:owner.id,
       textColumn:'',
-      isSyncedWithCloudColumn:true,
+      isSyncedWithCloudColumn:1,
     });
     final note = DataBaseNote(
       id: noteId,
       userid: owner.id,
        text: '',      
-       isSyncedWithCloud: true,
+       isSyncedWithCloud:true,
     );
     _notes.add(note);
     _notesStreamController.add(_notes);
@@ -284,6 +293,7 @@ const createNoteTable='''CREATE TABLE IF NOT EXISTS "note" (
 	"user_id"	INTEGER NOT NULL,
 	"text"	TEXT,
 	"is_synces_with_cloud"	INTEGER NOT NULL DEFAULT 0,
+  FOREIGN KEY("user_id") REFERENCES "user"("id"),
 	PRIMARY KEY("id" AUTOINCREMENT)
 );''';
 const dbname='note.db';
@@ -293,4 +303,4 @@ const idColumn='id';
 const emailColumn='email';
 const useridColumn='user_id';
 const textColumn='text';
-const isSyncedWithCloudColumn='is_synced_with_cloud';
+const isSyncedWithCloudColumn='is_synces_with_cloud';
