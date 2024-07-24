@@ -9,8 +9,11 @@ class NotesViewList
  extends StatelessWidget {
   final List<DataBaseNote> notes;
   final NoteCallBack onDeleteNote;
+  final NoteCallBack onTap;
  const NotesViewList 
-  ({super.key,required this.notes,required this .onDeleteNote});
+  ({super.key,required this.notes,
+  required this.onDeleteNote, 
+  required this.onTap,});
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +24,9 @@ class NotesViewList
                     {
                       final note=notes[index];
                       return ListTile(
+                        onTap: (){
+                          onTap(note);
+                        },
                         title:Text(note.text,
                         maxLines:1,
                         softWrap:true,

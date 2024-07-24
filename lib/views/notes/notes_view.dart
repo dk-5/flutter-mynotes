@@ -30,7 +30,7 @@ class _NotesViewState extends State<NotesView> {
         actions: [
           IconButton(
             onPressed:(){
-                  Navigator.of(context).pushNamed(newNoteroute);
+                  Navigator.of(context).pushNamed(createorupdateNoteRoute);
             },
             icon:const Icon(Icons.add),
           ),
@@ -71,7 +71,12 @@ class _NotesViewState extends State<NotesView> {
                     return NotesViewList(notes:allNotes, 
                     onDeleteNote: (note) async {
                       await _notesService.deleteNote(id: note.id);
-                    }
+                    },
+                    onTap:(note) {
+                      Navigator.of(context).pushNamed(createorupdateNoteRoute,
+                      arguments:note,
+                      );
+                    },
                     );
                     
                   
