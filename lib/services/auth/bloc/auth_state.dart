@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mynotes/services/auth/auth_user.dart';
 
@@ -6,11 +7,18 @@ abstract class AuthState{
   const AuthState();
 }
 
-class AuthStateLoading extends AuthState 
+class AuthStateUnintialized extends AuthState
 {
-  const AuthStateLoading();
+  const AuthStateUnintialized();
 }
 
+class AuthStateRegister extends AuthState
+{
+  final Exception? exception;
+
+  const AuthStateRegister(this.exception);
+
+}
 class AuthStateLoggedIn extends AuthState
 {
   final AuthUser user;
@@ -22,14 +30,12 @@ class AuthStateEmailVerification extends AuthState{
   const AuthStateEmailVerification();
 }
 
-class AuthStateLogout extends AuthState
+class AuthStateLogout extends AuthState with EquatableMixin
 {
   final Exception? exception;
-  const AuthStateLogout(this.exception);
-}
-
-class AuthStateLogoutException extends AuthState
-{
- final Exception exception;
-  const AuthStateLogoutException(this.exception);
+  final bool isLoading;
+  const AuthStateLogout({required this.exception, required this.isLoading});
+  
+  @override
+  List<Object?> get props => [exception,isLoading];
 }

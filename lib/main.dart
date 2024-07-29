@@ -27,10 +27,6 @@ void main() {
         child: const HomePage(),
       ),
       routes: {
-        loginroute: (context) => const LoginView(),
-        registerroute: (context) => const RegisterView(),
-        notesroute: (context) => const NotesView(),
-        verifyemailroute: (context) => const VerifyEmailPage(),
         createorupdateNoteRoute: (context) => const CreateUpdateNotesView(),
       },
     ),
@@ -55,7 +51,10 @@ class HomePage extends StatelessWidget {
       } else if(state is AuthStateLogout)
       {
         return const LoginView();
-      }else 
+      }else if(state is AuthStateRegister){
+        return const RegisterView();
+      }
+      else 
       {
         return const Scaffold(body:Center(child:CircularProgressIndicator()));
       }
