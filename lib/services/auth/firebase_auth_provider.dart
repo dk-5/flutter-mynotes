@@ -5,7 +5,6 @@ import 'package:mynotes/services/auth/auth_exceptions.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth,FirebaseAuthException;
 import 'package:mynotes/services/auth/auth_user.dart';
 
-
 class FirebaseAuthProvider implements AuthProvider{
  
  @override
@@ -46,8 +45,7 @@ else
                   }
                   else if(e.code=='invalid-credential')
                   {
-                    
-                    throw InvalidEmailAuthException();
+                    throw WrongPasswordAuthException();
                   }
                   else 
                   {
