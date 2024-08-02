@@ -8,6 +8,7 @@ import 'package:mynotes/services/auth/bloc/auth_state.dart';
 import 'package:mynotes/services/auth/firebase_auth_provider.dart';
 import 'package:mynotes/views/login_view.dart';
 import 'package:mynotes/views/notes/create_update_notes_view.dart';
+import 'package:mynotes/views/notes/forgot_password_view.dart';
 import 'package:mynotes/views/notes/notes_view.dart';
 import 'package:mynotes/views/register_view.dart';
 import 'package:mynotes/views/verifyemail_view.dart';
@@ -63,7 +64,11 @@ class HomePage extends StatelessWidget {
               return const LoginView();
             } else if (state is AuthStateRegister) {
               return const RegisterView();
-            } else {
+            } else if(state is AuthStateForgotPassword)
+            {
+              return const ForgotPasswordView();
+            } 
+            else {
               return const Scaffold(
                   body: Center(child: CircularProgressIndicator()));
             }
